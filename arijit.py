@@ -51,8 +51,20 @@ def nnk(X,y_uniques,lr=0.1):
 	# preds = model.predict(X_test, batch_size=1000, verbose=1)
 	# print score
 
-if __name__ == '__main__':
-	
+def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
+	import csv
+	csv.field_size_limit(1000000000)
+	outwriter = csv.writer(open(fil,'w'),delimiter=",")
+	rows = np.arange(0,len(Xpreds))
+	for row in rows :
+		outwriter.writerow([idx[row],Xpreds[row]])
+
+def getdata() :
+	"""
+	Gets all the data in.
+	"""
+
+	#Training
 	with open('foodtrain/train.json') as json_data:
 		data = js.load(json_data)
 		json_data.close()
@@ -68,7 +80,7 @@ if __name__ == '__main__':
 	print "Number of unique ingredients = %d"%(len(unique_ingredients))
 	print "Number of unique cuisines = %d"%(len(unique_cuisines))
 
-	X = np.zeros((len(ingredients), len(unique_ingredients)))
+	X_train = np.zeros((len(ingredients), len(unique_ingredients)))
 
 	# Compile feature matrix. Could be sparse but dense is fine for us.
 	# Each feature is an ingredient. Each row is a recipe. For each 
@@ -77,14 +89,46 @@ if __name__ == '__main__':
 	for d,dish in enumerate(ingredients):
 		for i,ingredient in enumerate(unique_ingredients):
 			if ingredient in dish:
-				X[d,i] = 1
+				X_train[d,i] = 1
 
 	# Also need to ensure
-	y=np.zeros((len(classes),len(unique_cuisines)))
+	y_train=np.zeros((len(classes),len(unique_cuisines)))
 	for c,clas in enumerate(classes):
 		for q,cuisine in enumerate(unique_cuisines):
 			if cuisine in clas:
-				y[c,q] = 1
+				y_train[c,q] = 1
+
+	# Testing
+	# to test:
+	with open('foodtest/test.json') as json_data:
+		data = js.load(json_data)
+		json_data.close()
+
+	ingredients = [item['ingredients'] for item in data]
+	indices = [item['id'] for item in data]
+
+	# print len(data)
+	# print (classes)
+	print "Number of recipes = %d"%(len(ingredients))
+	print "Number of unique ingredients = %d"%(len(unique_ingredients))
+
+	Xtest = np.zeros((len(ingredients), len(unique_ingredients)))
+
+	# Compile feature matrix. Could be sparse but dense is fine for us.
+	# Each feature is an ingredient. Each row is a recipe. For each 
+	# column (feature), a 1 indicates the recipe has that ingredient,
+	# while a 0 indicates it does not.
+	for d,dish in enumerate(ingredients):
+		for i,ingredient in enumerate(unique_ingredients):
+			if ingredient in dish:
+				Xtest[d,i] = 1
+
+	print Xtest.shape
+	return X_train,y_train,Xtest,unique_cuisines,indices
+
+if __name__ == '__main__':
+	
+	X, y, Xtest, unique_cuisines = getdata() # import the data
 
 	# Split into training and validation sets
 	rs = 19683
@@ -106,8 +150,26 @@ if __name__ == '__main__':
 		pred[row] = np.argmax(predictions[row])
 		yint[row] = np.argmax(y_test[row])
 
-	accs.append(metrics.accuracy_score(yint,pred))
+	#####
+	# now to test
+	#####
 
+	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
+	# Take max value in preds rows as classification
+	pred = np.zeros((len(Xtest)))
+	yint = np.zeros((len(Xtest)))
+	for row in np.arange(0,len(predictions)) :
+		pred[row] = np.argmax(predictions[row])
+
+	newcuisines = []
+	for row in np.arange(0,20) :
+		newcuisines.append(str(list(unique_cuisines)[row]))
+
+	predstr = []
+	for row in np.arange(0,len(predictions)) :
+		predstr.append(newcuisines[int(pred[row])])
+
+	writetest(indices,predstr,'dummy.csv')
 	# model = Sequential()
 	# model.add(Dense(512, input_dim=X.shape[1]))
 	# model.add(PReLU())
