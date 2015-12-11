@@ -7,10 +7,9 @@ import numpy as np
 
 if __name__ == '__main__':
 	
-	X, y, Xtest, unique_cuisines,indices = getdata() # import the data
+	X, y, Xtest, unique_cuisines,indices = getsparsedata() # import the data
 
-	# sparsify because why not
-	Xsparse = sparse.
+	
 	# Split into training and validation sets
 	rs = 19683
 	X_train, X_test, y_train, y_test = \

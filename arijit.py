@@ -15,13 +15,14 @@ import numpy as np
 import theano
 import matplotlib.pyplot as plt
 
-
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import PReLU
 from keras.utils import np_utils, generic_utils
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
+
+from foodio import getdata, writedata, LemmaTokenizer
 
 def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
@@ -57,89 +58,24 @@ def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
 	outwriter = csv.writer(open(fil,'w'),delimiter=",")
 	rows = np.arange(0,len(Xpreds))
 	for row in rows :
-		outwriter.writerow([idx[row],Xpreds[row]])
-
-def getdata() :
-	"""
-	Gets all the data in.
-	"""
-
-	#Training
-	with open('foodtrain/train.json') as json_data:
-		data = js.load(json_data)
-		json_data.close()
-
-	classes = [item['cuisine'] for item in data]
-	ingredients = [item['ingredients'] for item in data]
-	unique_ingredients = set(item for sublist in ingredients for item in sublist)
-	unique_cuisines = set(classes)
-
-	# print len(data)
-	# print (classes)
-	print "Number of recipes = %d"%(len(ingredients))
-	print "Number of unique ingredients = %d"%(len(unique_ingredients))
-	print "Number of unique cuisines = %d"%(len(unique_cuisines))
-
-	X_train = np.zeros((len(ingredients), len(unique_ingredients)))
-
-	# Compile feature matrix. Could be sparse but dense is fine for us.
-	# Each feature is an ingredient. Each row is a recipe. For each 
-	# column (feature), a 1 indicates the recipe has that ingredient,
-	# while a 0 indicates it does not.
-	for d,dish in enumerate(ingredients):
-		for i,ingredient in enumerate(unique_ingredients):
-			if ingredient in dish:
-				X_train[d,i] = 1
-
-	# Also need to ensure
-	y_train=np.zeros((len(classes),len(unique_cuisines)))
-	for c,clas in enumerate(classes):
-		for q,cuisine in enumerate(unique_cuisines):
-			if cuisine in clas:
-				y_train[c,q] = 1
-
-	# Testing
-	# to test:
-	with open('foodtest/test.json') as json_data:
-		data = js.load(json_data)
-		json_data.close()
-
-	ingredients = [item['ingredients'] for item in data]
-	indices = [item['id'] for item in data]
-
-	# print len(data)
-	# print (classes)
-	print "Number of recipes = %d"%(len(ingredients))
-	print "Number of unique ingredients = %d"%(len(unique_ingredients))
-
-	Xtest = np.zeros((len(ingredients), len(unique_ingredients)))
-
-	# Compile feature matrix. Could be sparse but dense is fine for us.
-	# Each feature is an ingredient. Each row is a recipe. For each 
-	# column (feature), a 1 indicates the recipe has that ingredient,
-	# while a 0 indicates it does not.
-	for d,dish in enumerate(ingredients):
-		for i,ingredient in enumerate(unique_ingredients):
-			if ingredient in dish:
-				Xtest[d,i] = 1
-
-	print Xtest.shape
-	return X_train,y_train,Xtest,unique_cuisines,indices
+		outwriter.writerow([int(idx[row]),Xpreds[row]])
 
 if __name__ == '__main__':
-	
-	X, y, Xtest, unique_cuisines = getdata() # import the data
+	print("Importing Data")
+	X, y, Xtest, unique_cuisines, indices = getdata() # import the data
 
 	# Split into training and validation sets
 	rs = 19683
 	X_train, X_test, y_train, y_test = \
 		cross_validation.train_test_split(X, y, \
 			test_size=0.4, random_state=rs)
-
+	
+	print("Training classifier")
 	# Train the classifier and fit to training data
 	clf2 = nnk(X_train,unique_cuisines,lr=0.1)
 	f = clf2.fit(X_train, y_train, nb_epoch=30, batch_size=100, validation_split=0.15)
 
+	print("Making predictions on validation set")
 	# Make predictions on validation data
 	predictions = clf2.predict(X_test, batch_size=100, verbose=1)
 
@@ -150,14 +86,20 @@ if __name__ == '__main__':
 		pred[row] = np.argmax(predictions[row])
 		yint[row] = np.argmax(y_test[row])
 
+	print("Classifier Accuracy = %d"%(metrics.accuracy_score(yint,pred)))
+
 	#####
 	# now to test
 	#####
+	print("Testing classifier on Test data")
+	print("Re-train with full training set")
+	clf2 = nnk(X,unique_cuisines,lr=0.1)
+	f = clf2.fit(X, y, nb_epoch=30, batch_size=100, validation_split=0.15)
 
+	print("Make predictions on test set")
 	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
 	# Take max value in preds rows as classification
 	pred = np.zeros((len(Xtest)))
-	yint = np.zeros((len(Xtest)))
 	for row in np.arange(0,len(predictions)) :
 		pred[row] = np.argmax(predictions[row])
 
@@ -169,7 +111,8 @@ if __name__ == '__main__':
 	for row in np.arange(0,len(predictions)) :
 		predstr.append(newcuisines[int(pred[row])])
 
-	writetest(indices,predstr,'dummy.csv')
+	print("Storing predictions")
+	writetest(indices,predstr,'NN.512.256.64.filtdata.csv')
 	# model = Sequential()
 	# model.add(Dense(512, input_dim=X.shape[1]))
 	# model.add(PReLU())
