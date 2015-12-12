@@ -94,6 +94,9 @@ def iter_minibatches(traindata,chunksize=1000) :
 		chunkrows = range(chunkstartmarker,chunkstartmarker + chunksize)
 		X_chunk, y_chunk = getrows(chunkrows)
 
+def normrows(d) :
+    return d / float(np.count_nonzero(d))
+
 if __name__ == '__main__':
 	print("Importing Data")
 	# X, y, unique_cuisines = getdata(dataset='Train') # import the data
@@ -154,8 +157,10 @@ if __name__ == '__main__':
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
 	X, y, unique_cuisines = getdata(dataset='Train') # import the data
+	X = np.apply_along_axis(normrows,1,X) # Try normalizing?
+	
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
-	f = clf2.fit(X, y, nb_epoch=50, batch_size=1000, 
+	f = clf2.fit(X, y, nb_epoch=35, batch_size=1000, 
 		validation_split=0.15, show_accuracy=True)
 
 	# print("Make predictions on test set")
