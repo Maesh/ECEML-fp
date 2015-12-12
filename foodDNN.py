@@ -31,22 +31,22 @@ def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
-	model.add(Dense(10, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
+	model.add(Dense(32, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(10, init='he_normal',input_dim=10))#, W_regularizer=l2(0.1)))
+	model.add(Dense(32, init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(10, init='he_normal',input_dim=10))#, W_regularizer=l2(0.1)))
+	model.add(Dense(32, init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(10, init='he_normal',input_dim=10))#, W_regularizer=l2(0.1)))
+	model.add(Dense(32, init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(10, init='he_normal',input_dim=10))#, W_regularizer=l2(0.1)))
+	model.add(Dense(32, init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(len(y_uniques), init='he_normal',input_dim=10))#, W_regularizer=l2(0.1)))
+	model.add(Dense(len(y_uniques), init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
 	model.add(Activation('softmax'))
 	#len(y_uniques)
 	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 	clf2 = nnk(X_train,unique_cuisines,lr=0.1)
 	# # clf2 = rnnkeras(39744,20,lr=0.1)
 	f = clf2.fit(X_train, y_train, nb_epoch=30, 
-		batch_size=100, validation_split=0.15,
+		batch_size=1000, validation_split=0.15,
 		show_accuracy=True, verbose=1)
 
 	# We know rows in training matrix = 37994
