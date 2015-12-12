@@ -59,8 +59,8 @@ def rnnkeras(X,y_uniques,lr=0.1) :
 	# input dimension should be (nb_samples, timesteps, input_dim)
 
 	model = Sequential()
-	model.add(Embedding(X.shape[1],50))
-	model.add(SimpleRNN(256,input_dim=X.shape[1],init='he_normal'))
+	model.add(Embedding(X.shape[1],3))
+	model.add(SimpleRNN(100,input_dim=X.shape[1],init='he_normal'))
 	# model.add(Activation('tanh'))
 	# model.add(Dropout(0.5))
 	# model.add(SimpleRNN(256,init='he_normal',input_dim=256))
@@ -115,27 +115,27 @@ if __name__ == '__main__':
 	#####
 	# now to test
 	#####
-	# print("Testing classifier on Test data")
-	# print("Re-train with full training set")
-	# clf2 = nnk(X,unique_cuisines,lr=0.1)
-	# f = clf2.fit(X, y, nb_epoch=30, batch_size=100, 
-	# 	validation_split=0.15, show_accuracy=True)
+	print("Testing classifier on Test data")
+	print("Re-train with full training set")
+	clf2 = nnk(X,unique_cuisines,lr=0.1)
+	f = clf2.fit(X, y, nb_epoch=30, batch_size=100, 
+		validation_split=0.15, show_accuracy=True)
 
-	# print("Make predictions on test set")
-	# predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
-	# # Take max value in preds rows as classification
-	# pred = np.zeros((len(Xtest)))
-	# for row in np.arange(0,len(predictions)) :
-	# 	pred[row] = np.argmax(predictions[row])
+	print("Make predictions on test set")
+	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
+	# Take max value in preds rows as classification
+	pred = np.zeros((len(Xtest)))
+	for row in np.arange(0,len(predictions)) :
+		pred[row] = np.argmax(predictions[row])
 
-	# unique_cuisines = sorted(list(unique_cuisines))
-	# newcuisines = []
-	# for row in np.arange(0,20) :
-	# 	newcuisines.append(unique_cuisines[row])
+	unique_cuisines = sorted(list(unique_cuisines))
+	newcuisines = []
+	for row in np.arange(0,20) :
+		newcuisines.append(unique_cuisines[row])
 
-	# predstr = []
-	# for row in np.arange(0,len(predictions)) :
-	# 	predstr.append(newcuisines[int(pred[row])])
+	predstr = []
+	for row in np.arange(0,len(predictions)) :
+		predstr.append(newcuisines[int(pred[row])])
 
-	# print("Storing predictions")
-	# writetest(test_indices,predstr,'NN.512.256.64.filtdata.csv')
+	print("Storing predictions")
+	writetest(test_indices,predstr,'NN.512.256.64.filtdata.csv')
