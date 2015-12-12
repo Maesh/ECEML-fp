@@ -199,4 +199,4 @@ if __name__ == '__main__':
 		predstr.append(newcuisines[int(pred[row])])
 
 	print("Storing predictions")
-	writetest(test_indices,predstr,'DNN.512.256.128.64.32.csv')
+	writetest(test_indices,predstr,'DNN.128.64.32.PReLU.csv')
