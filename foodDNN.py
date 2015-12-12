@@ -95,21 +95,21 @@ def iter_minibatches(traindata,chunksize=1000) :
 
 if __name__ == '__main__':
 	print("Importing Data")
-	X, y, unique_cuisines = getdata(dataset='Train') # import the data
+	# X, y, unique_cuisines = getdata(dataset='Train') # import the data
 
-	# Split into training and validation sets
-	rs = 19683
-	X_train, X_test, y_train, y_test = \
-		cross_validation.train_test_split(X, y, \
-			test_size=0.4, random_state=rs)
+	# # Split into training and validation sets
+	# rs = 19683
+	# X_train, X_test, y_train, y_test = \
+	# 	cross_validation.train_test_split(X, y, \
+	# 		test_size=0.4, random_state=rs)
 
-	print("Training classifier")
-	# Train the classifier and fit to training data
-	clf2 = nnk(X_train,unique_cuisines,lr=0.1)
-	# # clf2 = rnnkeras(39744,20,lr=0.1)
-	f = clf2.fit(X_train, y_train, nb_epoch=250, shuffle=True,
-		batch_size=1000, validation_split=0.15,
-		show_accuracy=True, verbose=1)
+	# print("Training classifier")
+	# # Train the classifier and fit to training data
+	# clf2 = nnk(X_train,unique_cuisines,lr=0.1)
+	# # # clf2 = rnnkeras(39744,20,lr=0.1)
+	# f = clf2.fit(X_train, y_train, nb_epoch=250, shuffle=True,
+	# 	batch_size=1000, validation_split=0.15,
+	# 	show_accuracy=True, verbose=1)
 
 	# We know rows in training matrix = 37994
 	# Bring in 1000 at a time to train
@@ -150,51 +150,52 @@ if __name__ == '__main__':
 	#####
 	# now to test
 	#####
-	# print("Testing classifier on Test data")
-	# print("Re-train with full training set")
-	# # clf2 = nnk(X,unique_cuisines,lr=0.1)
-	# # f = clf2.fit(X, y, nb_epoch=30, batch_size=25, 
-	# # 	validation_split=0.15, show_accuracy=True)
+	print("Testing classifier on Test data")
+	print("Re-train with full training set")
+	X, y, unique_cuisines = getdata(dataset='Train') # import the data
+	clf2 = nnk(X.shape,unique_cuisines,lr=0.1)
+	f = clf2.fit(X, y, nb_epoch=100, batch_size=100, 
+		validation_split=0.15, show_accuracy=True)
 
-	# # print("Make predictions on test set")
-	# # predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
-	# Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
-	# 						delimiter = ',')
+	# print("Make predictions on test set")
+	# predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
+	Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
+							delimiter = ',')
 
-	# predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
-	# # Take max value in preds rows as classification
-	# pred = np.zeros((len(Xtest)))
-	# for row in np.arange(0,len(predictions)) :
-	# 	pred[row] = np.argmax(predictions[row])
+	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
+	# Take max value in preds rows as classification
+	pred = np.zeros((len(Xtest)))
+	for row in np.arange(0,len(predictions)) :
+		pred[row] = np.argmax(predictions[row])
 
-	# unique_cuisines = {'brazilian',
-	# 						'british',
-	# 						'cajun_creole',
-	# 						'chinese',
-	# 						'filipino',
-	# 						'french',
-	# 						'greek',
-	# 						'indian',
-	# 						'irish',
-	# 						'italian',
-	# 						'jamaican',
-	# 						'japanese',
-	# 						'korean',
-	# 						'mexican',
-	# 						'moroccan',
-	# 						'russian',
-	# 						'southern_us',
-	# 						'spanish',
-	# 						'thai',
-	# 						'vietnamese'}
-	# unique_cuisines = sorted(list(unique_cuisines))
-	# newcuisines = []
-	# for row in np.arange(0,20) :
-	# 	newcuisines.append(unique_cuisines[row])
+	unique_cuisines = {'brazilian',
+							'british',
+							'cajun_creole',
+							'chinese',
+							'filipino',
+							'french',
+							'greek',
+							'indian',
+							'irish',
+							'italian',
+							'jamaican',
+							'japanese',
+							'korean',
+							'mexican',
+							'moroccan',
+							'russian',
+							'southern_us',
+							'spanish',
+							'thai',
+							'vietnamese'}
+	unique_cuisines = sorted(list(unique_cuisines))
+	newcuisines = []
+	for row in np.arange(0,20) :
+		newcuisines.append(unique_cuisines[row])
 
-	# predstr = []
-	# for row in np.arange(0,len(predictions)) :
-	# 	predstr.append(newcuisines[int(pred[row])])
+	predstr = []
+	for row in np.arange(0,len(predictions)) :
+		predstr.append(newcuisines[int(pred[row])])
 
-	# print("Storing predictions")
-	# writetest(test_indices,predstr,'RNN.100neurons.30epochs.csv')
+	print("Storing predictions")
+	writetest(test_indices,predstr,'DNN.512.256.128.64.32.csv')
