@@ -124,7 +124,7 @@ if __name__ == '__main__':
 	print('Build model...')
 	model = Graph()
 	model.add_input(name='input', input_shape=(maxlen,), dtype=int)
-	model.add_node(Embedding(max_features, 128, input_length=maxlen),
+	model.add_node(Embedding(max_features, 32, input_length=maxlen),
 	               name='embedding', input='input')
 	model.add_node(LSTM(64), name='forward', input='embedding')
 	model.add_node(LSTM(64, go_backwards=True), name='backward', input='embedding')
