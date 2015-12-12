@@ -21,7 +21,7 @@ from sklearn.linear_model import LogisticRegression
 
 
 import numpy as np
-np.random.seed(1337)  # for reproducibility
+np.random.seed(19683)  # for reproducibility
 
 from keras.preprocessing import sequence
 from keras.utils.np_utils import accuracy
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 	corpustr = traindf['ingredients_string']
 
 	# TFIDF vectorizer for training. 1-grams
-	vectorizertr = TfidfVectorizer(stop_words='english',
+	vectorizertr = TfidfVectorizer(stop_words='english',max_features=500,
 	                             ngram_range = ( 1 , 1 ),analyzer="word", 
 	                             max_df = .57 , binary=False , token_pattern=r'\w+' , sublinear_tf=False)
 	tfidftr = vectorizertr.fit_transform(corpustr).todense()
