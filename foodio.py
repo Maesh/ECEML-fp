@@ -96,8 +96,11 @@ def writedata() :
 	ings_list = [' '.join(x) for x in ingredients]
 	test_list = [' '.join(x) for x in test_ingredients]
 
-	vect = CountVectorizer(tokenizer=LemmaTokenizer(),
-							max_features=500)  
+	# vect = CountVectorizer(tokenizer=LemmaTokenizer())
+	vect = Pipeline([
+		('vect', CountVectorizer()),
+		('tfidf', TfidfTransformer()),
+	])  
 	bag_of_ingredients = vect.fit(ings_list)
 	bag_of_ingredients = vect.transform(ings_list).toarray()
 
@@ -112,10 +115,10 @@ def writedata() :
 
 	print("Writing files")
 	# Now to actually write the data
-	fil = 'one.hot.training.ingredients.top500.csv'
-	fil2 = 'one.hot.training.classes.csv'
-	fil3 = 'one.hot.testing.ingredients.top500.csv'
-	fil4 = 'testing.indices.csv'
+	fil = 'one.hot.training.ingredients.ng1-2.csv'
+	fil2 = 'one.hot.training.classes.ng1-2.csv'
+	fil3 = 'one.hot.testing.ingredients.ng1-2.csv'
+	fil4 = 'testing.indices.ng1-2.csv'
 
 	csv.field_size_limit(1000000000)
 	outwriter = csv.writer(open(fil,'w'),delimiter=",")
@@ -148,11 +151,11 @@ def getdata(write=False,dataset='Train') :
 	"""
 	if dataset == 'Train' :
 		print("Get training ingredients")
-		ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
+		ingredients = np.genfromtxt('one.hot.training.ingredients.ng1-2.csv',
 						delimiter = ',')
 
 		print("Get training classes")
-		classes = np.genfromtxt('one.hot.training.classes.csv',
+		classes = np.genfromtxt('one.hot.training.classes.ng1-2.csv',
 						delimiter = ',')
 		unique_cuisines = {'brazilian',
 							'british',
@@ -181,11 +184,11 @@ def getdata(write=False,dataset='Train') :
 
 	if dataset == 'Test' :
 		print("Get testing ingredients")
-		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.csv',
+		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.ng1-2.csv',
 						delimiter = ',')
 
 		print("Get testing indices")
-		indices = np.genfromtxt('testing.indices.csv',
+		indices = np.genfromtxt('testing.indices.ng1-2.csv',
 						delimiter = ',')
 		return test_ingredients, indices
 	#unique_ingredients = set(item for sublist in ingredients for item in sublist)

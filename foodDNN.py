@@ -31,7 +31,7 @@ def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
-	model.add(Dense(3000, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
+	model.add(Dense(512, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
@@ -41,13 +41,13 @@ def nnk(X,y_uniques,lr=0.1):
 	# model.add(Dense(128, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	# model.add(Dropout(0.5))
-	model.add(Dense(1500, init='he_normal',input_dim=3000))#, W_regularizer=l2(0.1)))
+	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(512, init='he_normal',input_dim=1500))#, W_regularizer=l2(0.1)))
+	model.add(Dense(64, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(len(y_uniques), init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
+	model.add(Dense(len(y_uniques), init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
 	model.add(Activation('softmax'))
 	#len(y_uniques)
 	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
 	# print("Make predictions on test set")
 	# predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
-	Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
+	Xtest = np.genfromtxt('one.hot.testing.ingredients.ng1-2.csv',
 							delimiter = ',')
 
 	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 	for row in np.arange(0,len(predictions)) :
 		predstr.append(newcuisines[int(pred[row])])
 
-	test_indices = np.genfromtxt('testing.indices.csv',
+	test_indices = np.genfromtxt('testing.indices.ng1-2.csv',
 						delimiter = ',')
 	print("Storing predictions")
-	writetest(test_indices,predstr,'DNN.512.256.64.PReLU.csv')
+	writetest(test_indices,predstr,'NN.512.256.64.PReLU.tfidf.csv')
