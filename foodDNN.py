@@ -31,13 +31,13 @@ def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
-	model.add(Dense(32, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
+	model.add(Dense(512, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(64, init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
+	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
-	model.add(Dense(128, init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
+	model.add(Dense(128, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	model.add(Activation('tanh'))
 	model.add(Dropout(0.5))
 	model.add(Dense(64, init='he_normal',input_dim=128))#, W_regularizer=l2(0.1)))
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 	# Train the classifier and fit to training data
 	clf2 = nnk(X_train,unique_cuisines,lr=0.1)
 	# # clf2 = rnnkeras(39744,20,lr=0.1)
-	f = clf2.fit(X_train, y_train, nb_epoch=500, 
+	f = clf2.fit(X_train, y_train, nb_epoch=250, shuffle=True,
 		batch_size=1000, validation_split=0.15,
 		show_accuracy=True, verbose=1)
 
