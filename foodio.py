@@ -96,24 +96,25 @@ def writedata() :
 	ings_list = [' '.join(x) for x in ingredients]
 	test_list = [' '.join(x) for x in test_ingredients]
 
-	vect = CountVectorizer(tokenizer=LemmaTokenizer())  
+	vect = CountVectorizer(tokenizer=LemmaTokenizer(),
+							max_features=500)  
 	bag_of_ingredients = vect.fit(ings_list)
 	bag_of_ingredients = vect.transform(ings_list).toarray()
 
 	bag_of_test = vect.transform(test_list).toarray()
 
-	vect = CountVectorizer(vocabulary=unique_cuisines_vocab)
-	bag_of_classes = vect.fit(classes)
-	bag_of_classes = vect.transform(classes).toarray()
+	vectclasses = CountVectorizer(vocabulary=unique_cuisines_vocab)
+	bag_of_classes = vectclasses.fit(classes)
+	bag_of_classes = vectclasses.transform(classes).toarray()
 
 	unique_ingredients = set(item for sublist in ingredients for item in sublist)
 	unique_cuisines = set(classes)
 
 	print("Writing files")
 	# Now to actually write the data
-	fil = 'one.hot.training.ingredients.csv'
+	fil = 'one.hot.training.ingredients.top500.csv'
 	fil2 = 'one.hot.training.classes.csv'
-	fil3 = 'one.hot.testing.ingredients.csv'
+	fil3 = 'one.hot.testing.ingredients.top500.csv'
 	fil4 = 'testing.indices.csv'
 
 	csv.field_size_limit(1000000000)
