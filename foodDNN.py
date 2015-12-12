@@ -95,7 +95,7 @@ def iter_minibatches(traindata,chunksize=1000) :
 		X_chunk, y_chunk = getrows(chunkrows)
 
 def normrows(d) :
-    return d / float(np.count_nonzero(d))
+    return d / float(len(d))
 
 if __name__ == '__main__':
 	print("Importing Data")
