@@ -153,7 +153,7 @@ if __name__ == '__main__':
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
 	X, y, unique_cuisines = getdata(dataset='Train') # import the data
-	clf2 = nnk(X.shape,unique_cuisines,lr=0.1)
+	clf2 = nnk(X,unique_cuisines,lr=0.1)
 	f = clf2.fit(X, y, nb_epoch=100, batch_size=100, 
 		validation_split=0.15, show_accuracy=True)
 
