@@ -107,7 +107,7 @@ if __name__ == '__main__':
 	# Train the classifier and fit to training data
 	clf2 = nnk(X_train,unique_cuisines,lr=0.1)
 	# # clf2 = rnnkeras(39744,20,lr=0.1)
-	f = clf2.fit(X_train, y_train, nb_epoch=30, 
+	f = clf2.fit(X_train, y_train, nb_epoch=500, 
 		batch_size=1000, validation_split=0.15,
 		show_accuracy=True, verbose=1)
 
