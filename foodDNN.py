@@ -31,7 +31,7 @@ def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
-	model.add(Dense(128, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
+	model.add(Dense(512, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
@@ -41,13 +41,13 @@ def nnk(X,y_uniques,lr=0.1):
 	# model.add(Dense(128, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	# model.add(Dropout(0.5))
-	model.add(Dense(64, init='he_normal',input_dim=128))#, W_regularizer=l2(0.1)))
+	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(32, init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
+	model.add(Dense(64, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(len(y_uniques), init='he_normal',input_dim=32))#, W_regularizer=l2(0.1)))
+	model.add(Dense(len(y_uniques), init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
 	model.add(Activation('softmax'))
 	#len(y_uniques)
 	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
@@ -201,4 +201,4 @@ if __name__ == '__main__':
 	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 	print("Storing predictions")
-	writetest(test_indices,predstr,'DNN.128.64.32.PReLU.csv')
+	writetest(test_indices,predstr,'DNN.512.256.64.PReLU.csv')
