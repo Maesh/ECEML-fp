@@ -33,6 +33,27 @@ def writedata() :
 	Changing this to a function for actually tokenizing and 
 	writing data to csv
 	"""
+	unique_cuisines_vocab= {'brazilian':0,
+							'british':1,
+							'cajun_creole':2,
+							'chinese':3,
+							'filipino':4,
+							'french':5,
+							'greek':6,
+							'indian':7,
+							'irish':8,
+							'italian':9,
+							'jamaican':10,
+							'japanese':11,
+							'korean':12,
+							'mexican':13,
+							'moroccan':14,
+							'russian':15,
+							'southern_us':16,
+							'spanish':17,
+							'thai':18,
+							'vietnamese':19}
+
 	print("Loading Data")
 	#Training
 	with open('foodtrain/train.json') as json_data:
@@ -65,6 +86,7 @@ def writedata() :
 	for row in np.arange(0,len(classes)) :
 		temp = filter(lambda x: x in string.printable, classes[row])
 		classes[row] = str(temp)
+
 	print("Vectorizing text")
 	# Make bag of words representation with CountVectorizer
 	ings_list = [' '.join(x) for x in ingredients]
@@ -76,7 +98,7 @@ def writedata() :
 
 	bag_of_test = vect.transform(test_list).toarray()
 
-	vect = CountVectorizer()
+	vect = CountVectorizer(vocabulary=unique_cuisines_vocab)
 	bag_of_classes = vect.fit(classes)
 	bag_of_classes = vect.transform(classes).toarray()
 
@@ -119,14 +141,6 @@ def getdata(write=False) :
 	"""
 	Gets all the data in. 
 	"""
-	# I don't like it but this is a hacky workaround
-	print("Finding unique ingredients")
-	with open('foodtrain/train.json') as json_data:
-		data = js.load(json_data)
-		json_data.close()
-	
-	classes = [item['cuisine'] for item in data]
-	unique_cuisines = set(classes)
 
 	print("Get training ingredients")
 	ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
