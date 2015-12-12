@@ -155,7 +155,7 @@ if __name__ == '__main__':
 	print("Re-train with full training set")
 	X, y, unique_cuisines = getdata(dataset='Train') # import the data
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
-	f = clf2.fit(X, y, nb_epoch=30, batch_size=1000, 
+	f = clf2.fit(X, y, nb_epoch=50, batch_size=1000, 
 		validation_split=0.15, show_accuracy=True)
 
 	# print("Make predictions on test set")
@@ -198,5 +198,7 @@ if __name__ == '__main__':
 	for row in np.arange(0,len(predictions)) :
 		predstr.append(newcuisines[int(pred[row])])
 
+	test_indices = np.genfromtxt('testing.indices.csv',
+						delimiter = ',')
 	print("Storing predictions")
 	writetest(test_indices,predstr,'DNN.128.64.32.PReLU.csv')
