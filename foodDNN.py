@@ -31,7 +31,7 @@ def nnk(X,y_uniques,lr=0.1):
 	model = Sequential()
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
-	model.add(Dense(512, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
+	model.add(Dense(3000, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
@@ -41,13 +41,13 @@ def nnk(X,y_uniques,lr=0.1):
 	# model.add(Dense(128, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
 	# model.add(Activation('tanh'))
 	# model.add(Dropout(0.5))
-	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
+	model.add(Dense(1500, init='he_normal',input_dim=3000))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(64, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
+	model.add(Dense(512, init='he_normal',input_dim=1500))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	model.add(Dense(len(y_uniques), init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
+	model.add(Dense(len(y_uniques), init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
 	model.add(Activation('softmax'))
 	#len(y_uniques)
 	sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
@@ -93,9 +93,6 @@ def iter_minibatches(traindata,chunksize=1000) :
 	while chunkstartmarker < len(traindata) :
 		chunkrows = range(chunkstartmarker,chunkstartmarker + chunksize)
 		X_chunk, y_chunk = getrows(chunkrows)
-
-def normrows(d) :
-    return d / float(len(d))
 
 if __name__ == '__main__':
 	print("Importing Data")
@@ -157,7 +154,6 @@ if __name__ == '__main__':
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
 	X, y, unique_cuisines = getdata(dataset='Train') # import the data
-	X = np.apply_along_axis(normrows,1,X) # Try normalizing?
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
 	f = clf2.fit(X, y, nb_epoch=35, batch_size=1000, 
@@ -167,7 +163,7 @@ if __name__ == '__main__':
 	# predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
 	Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
 							delimiter = ',')
-	Xtest = np.apply_along_axis(normrows,1,Xtest) # Try normalizing?
+
 	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
 	# Take max value in preds rows as classification
 	pred = np.zeros((len(Xtest)))
