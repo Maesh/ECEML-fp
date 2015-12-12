@@ -142,30 +142,19 @@ def writedata() :
 		outwriter.writerow([test_indices[row]])
 
 
-def getdata(write=False) :
+def getdata(write=False,dataset='Train') :
 	"""
 	Gets all the data in. 
 	"""
+	if dataset == 'Train' :
+		print("Get training ingredients")
+		ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
+						delimiter = ',')
 
-	print("Get training ingredients")
-	ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
-					delimiter = ',')
-
-	print("Get training classes")
-	classes = np.genfromtxt('one.hot.training.classes.csv',
-					delimiter = ',')
-
-	print("Get testing ingredients")
-	test_ingredients = np.genfromtxt('one.hot.testing.ingredients.csv',
-					delimiter = ',')
-
-	print("Get testing indices")
-	indices = np.genfromtxt('testing.indices.csv',
-					delimiter = ',')
-
-	#unique_ingredients = set(item for sublist in ingredients for item in sublist)
-	# Hack but it makes it easier
-	unique_cuisines = {'brazilian',
+		print("Get training classes")
+		classes = np.genfromtxt('one.hot.training.classes.csv',
+						delimiter = ',')
+		unique_cuisines = {'brazilian',
 							'british',
 							'cajun_creole',
 							'chinese',
@@ -185,13 +174,22 @@ def getdata(write=False) :
 							'spanish',
 							'thai',
 							'vietnamese'}
+		print "Number of recipes = %d"%(len(ingredients))
+		print "Number of unique ingredients = %d"%(len(ingredients[0]))
+		print "Number of unique cuisines = %d"%(len(unique_cuisines))
+		return ingredients,classes,unique_cuisines
 
+	if dataset == 'Test' :
+		print("Get testing ingredients")
+		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.csv',
+						delimiter = ',')
 
-	print "Number of recipes = %d"%(len(ingredients))
-	print "Number of unique ingredients = %d"%(len(ingredients[0]))
-	print "Number of unique cuisines = %d"%(len(unique_cuisines))
-
-	return ingredients,classes,test_ingredients,unique_cuisines,indices
+		print("Get testing indices")
+		indices = np.genfromtxt('testing.indices.csv',
+						delimiter = ',')
+		return test_ingredients, indices
+	#unique_ingredients = set(item for sublist in ingredients for item in sublist)
+	# Hack but it makes it easier
 
 def getsparsedata() :
 	"""
