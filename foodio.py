@@ -6,9 +6,11 @@ import numpy as np
 import json as js
 import csv
 import string
+import nltk
 
 from nltk.stem import WordNetLemmatizer 
 from nltk.tokenize import word_tokenize
+nltk.data.path.append('/media/maesh/Charming/nltk_data')
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.linear_model import SGDClassifier
@@ -33,6 +35,8 @@ def writedata() :
 	Changing this to a function for actually tokenizing and 
 	writing data to csv
 	"""
+	
+
 	unique_cuisines_vocab= {'brazilian':0,
 							'british':1,
 							'cajun_creole':2,
