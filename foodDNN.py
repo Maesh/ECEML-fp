@@ -35,12 +35,6 @@ def nnk(X,y_uniques,lr=0.1):
 	# model.add(Activation('tanh'))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
-	# model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
-	# model.add(Activation('tanh'))
-	# model.add(Dropout(0.5))
-	# model.add(Dense(128, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
-	# model.add(Activation('tanh'))
-	# model.add(Dropout(0.5))
 	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
 	model.add(PReLU())
 	model.add(Dropout(0.5))
@@ -202,4 +196,4 @@ if __name__ == '__main__':
 	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 	print("Storing predictions")
-	writetest(test_indices,predstr,'NN.512.256.64.PReLU.tfidf.csv')
+	writetest(test_indices,predstr,'NN.512.256.64.PReLU.2.csv')

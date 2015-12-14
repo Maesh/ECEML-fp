@@ -96,52 +96,58 @@ def writedata() :
 	ings_list = [' '.join(x) for x in ingredients]
 	test_list = [' '.join(x) for x in test_ingredients]
 
-	# vect = CountVectorizer(tokenizer=LemmaTokenizer())
-	vect = Pipeline([
-		('vect', CountVectorizer()),
-	])  
+	vect = CountVectorizer(tokenizer=LemmaTokenizer())
+	# vect = Pipeline([
+	# 	('vect', CountVectorizer()),
+	# ])  
 	bag_of_ingredients = vect.fit(ings_list)
-	bag_of_ingredients = vect.transform(ings_list).toarray()
+	bag_of_ingredients = vect.transform(ings_list).tocsr()#.toarray()
 
-	bag_of_test = vect.transform(test_list).toarray()
+	bag_of_test = vect.transform(test_list).tocsr()#.toarray()
 
 	vectclasses = CountVectorizer(vocabulary=unique_cuisines_vocab)
 	bag_of_classes = vectclasses.fit(classes)
-	bag_of_classes = vectclasses.transform(classes).toarray()
+	bag_of_classes = vectclasses.transform(classes).tocsr()#.toarray()
 
 	unique_ingredients = set(item for sublist in ingredients for item in sublist)
 	unique_cuisines = set(classes)
 
 	print("Writing files")
 	# Now to actually write the data
-	fil = 'one.hot.training.ingredients.csv'
-	fil2 = 'one.hot.training.classes.csv'
-	fil3 = 'one.hot.testing.ingredients.csv'
-	fil4 = 'testing.indices.csv'
+	fil = 'one.hot.training.ingredients.sparse.csv'
+	fil2 = 'one.hot.training.classes.sparse.csv'
+	fil3 = 'one.hot.testing.ingredients.sparse.csv'
+	fil4 = 'testing.indices.sparse.csv'
 
-	csv.field_size_limit(1000000000)
-	outwriter = csv.writer(open(fil,'w'),delimiter=",")
-	rows = np.arange(0,len(bag_of_ingredients))
-	for row in rows :
-		outwriter.writerow(bag_of_ingredients[row])
+	np.savez(fil, bag_of_ingredients)
+	np.savez(fil2, bag_of_classes)
+	np.savez(fil3, bag_of_test)
+	# csv.field_size_limit(1000000000)
+	# outwriter = csv.writer(open(fil,'w'),delimiter=",")
+	# # rows = np.arange(0,len(bag_of_ingredients))
+	# rows = np.arange(0,bag_of_ingredients.shape[0])
+	# for row in rows :
+	# 	outwriter.writerow(bag_of_ingredients[row])
 
-	csv.field_size_limit(1000000000)
-	outwriter = csv.writer(open(fil2,'w'),delimiter=",")
-	rows = np.arange(0,len(bag_of_classes))
-	for row in rows :
-		outwriter.writerow(bag_of_classes[row])
+	# csv.field_size_limit(1000000000)
+	# outwriter = csv.writer(open(fil2,'w'),delimiter=",")
+	# # rows = np.arange(0,len(bag_of_classes))
+	# rows = np.arange(0,bag_of_classes.shape[0])
+	# for row in rows :
+	# 	outwriter.writerow(bag_of_classes[row])
 
-	csv.field_size_limit(1000000000)
-	outwriter = csv.writer(open(fil3,'w'),delimiter=",")
-	rows = np.arange(0,len(bag_of_test))
-	for row in rows :
-		outwriter.writerow(bag_of_test[row])
+	# csv.field_size_limit(1000000000)
+	# outwriter = csv.writer(open(fil3,'w'),delimiter=",")
+	# # rows = np.arange(0,len(bag_of_test))
+	# rows = np.arange(0,bag_of_test.shape[0])
+	# for row in rows :
+	# 	outwriter.writerow(bag_of_test[row])
 
-	csv.field_size_limit(1000000000)
-	outwriter = csv.writer(open(fil4,'w'),delimiter=",")
-	rows = np.arange(0,len(test_indices))
-	for row in rows :
-		outwriter.writerow([test_indices[row]])
+	# csv.field_size_limit(1000000000)
+	# outwriter = csv.writer(open(fil4,'w'),delimiter=",")
+	# rows = np.arange(0,len(test_indices))
+	# for row in rows :
+	# 	outwriter.writerow([test_indices[row]])
 
 
 def getdata(write=False,dataset='Train') :
