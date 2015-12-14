@@ -1,7 +1,8 @@
 import csv as csv
 import scipy as scipy
 import numpy as np
-
+import json as js
+import string
 # Set random state before keras imports
 rs = 19683
 from sklearn import svm, cross_validation, preprocessing, metrics
@@ -11,6 +12,7 @@ import matplotlib.pyplot as plt
 from scipy.sparse import csr_matrix
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
+from sklearn.feature_extraction.text import CountVectorizer
 
 from foodio import getdata, writedata, LemmaTokenizer
 

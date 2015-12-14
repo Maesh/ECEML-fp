@@ -150,7 +150,7 @@ if __name__ == '__main__':
 	X, y, unique_cuisines = getdata(dataset='Train') # import the data
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
-	f = clf2.fit(X, y, nb_epoch=35, batch_size=1000, 
+	f = clf2.fit(X.toarray(), y.toarray(), nb_epoch=35, batch_size=1000, 
 		validation_split=0.15, show_accuracy=True)
 
 	# print("Make predictions on test set")
@@ -196,4 +196,4 @@ if __name__ == '__main__':
 	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 	print("Storing predictions")
-	writetest(test_indices,predstr,'NN.512.256.64.PReLU.2.csv')
+	writetest(test_indices,predstr,'NN.512.256.64.PReLU.5000feats.csv')
