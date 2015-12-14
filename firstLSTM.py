@@ -63,8 +63,8 @@ def lstmkeras(X,numfeats,y_uniques,lr=0.1) :
 	model.add_input(name='input', input_shape=(X,), dtype=int)
 	model.add_node(Embedding(numfeats, 16, input_length=X),
 				name='embedding', input='input')
-	model.add_node(LSTM(64), name='forward', input='embedding')
-	model.add_node(LSTM(64, go_backwards=True), name='backward', input='embedding')
+	model.add_node(LSTM(20), name='forward', input='embedding')
+	model.add_node(LSTM(20, go_backwards=True), name='backward', input='embedding')
 	model.add_node(Dropout(0.5), name='dropout', inputs=['forward', 'backward'])
 	model.add_node(Dense(y_uniques, activation='softmax'), name='softmax', input='dropout')
 	model.add_output(name='output', input='softmax')
