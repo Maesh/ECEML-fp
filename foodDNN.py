@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
 	# print("Make predictions on test set")
 	# predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
-	Xtest = np.genfromtxt('one.hot.testing.ingredients.ng1-2.csv',
+	Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
 							delimiter = ',')
 
 	predictions = clf2.predict(Xtest, batch_size=100, verbose=1)
@@ -199,7 +199,7 @@ if __name__ == '__main__':
 	for row in np.arange(0,len(predictions)) :
 		predstr.append(newcuisines[int(pred[row])])
 
-	test_indices = np.genfromtxt('testing.indices.ng1-2.csv',
+	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 	print("Storing predictions")
 	writetest(test_indices,predstr,'NN.512.256.64.PReLU.tfidf.csv')

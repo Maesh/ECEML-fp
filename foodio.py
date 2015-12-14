@@ -99,7 +99,6 @@ def writedata() :
 	# vect = CountVectorizer(tokenizer=LemmaTokenizer())
 	vect = Pipeline([
 		('vect', CountVectorizer()),
-		('tfidf', TfidfTransformer()),
 	])  
 	bag_of_ingredients = vect.fit(ings_list)
 	bag_of_ingredients = vect.transform(ings_list).toarray()
@@ -115,10 +114,10 @@ def writedata() :
 
 	print("Writing files")
 	# Now to actually write the data
-	fil = 'one.hot.training.ingredients.ng1-2.csv'
-	fil2 = 'one.hot.training.classes.ng1-2.csv'
-	fil3 = 'one.hot.testing.ingredients.ng1-2.csv'
-	fil4 = 'testing.indices.ng1-2.csv'
+	fil = 'one.hot.training.ingredients.csv'
+	fil2 = 'one.hot.training.classes.csv'
+	fil3 = 'one.hot.testing.ingredients.csv'
+	fil4 = 'testing.indices.csv'
 
 	csv.field_size_limit(1000000000)
 	outwriter = csv.writer(open(fil,'w'),delimiter=",")
@@ -184,11 +183,11 @@ def getdata(write=False,dataset='Train') :
 
 	if dataset == 'Test' :
 		print("Get testing ingredients")
-		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.ng1-2.csv',
+		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.csv',
 						delimiter = ',')
 
 		print("Get testing indices")
-		indices = np.genfromtxt('testing.indices.ng1-2.csv',
+		indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 		return test_ingredients, indices
 	#unique_ingredients = set(item for sublist in ingredients for item in sublist)

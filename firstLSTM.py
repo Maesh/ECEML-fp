@@ -118,13 +118,13 @@ if __name__ == '__main__':
 			X_train = np.genfromtxt('one.hot.training.ingredients.csv',
 									delimiter = ',',
 									skip_header = int(rowstart),
-									max_rows = 2000)
+									max_rows = 100)
 			y_train = np.genfromtxt('one.hot.training.classes.csv',
 									delimiter = ',',
 									skip_header = int(rowstart),
-									max_rows = 2000)
+									max_rows = 100)
 			clf2.fit({'input': X_train, 'output': y_train},
-						batch_size=32,
+						batch_size=100,
 						nb_epoch=1)
 
 
@@ -191,4 +191,4 @@ if __name__ == '__main__':
 		predstr.append(newcuisines[int(pred[row])])
 
 	print("Storing predictions")
-	writetest(test_indices,predstr,'RNN.100neurons.30epochs.csv')
+	writetest(test_indices,predstr,'LSTM.100neurons.30epochs.csv')
