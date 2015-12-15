@@ -24,7 +24,7 @@ from keras.utils import np_utils, generic_utils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
-from foodio import getdata, writedata, LemmaTokenizer
+from foodio import getdata, LemmaTokenizer
 
 
 def nnk(X,y_uniques,lr=0.1):
