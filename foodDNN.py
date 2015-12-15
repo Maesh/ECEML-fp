@@ -90,7 +90,7 @@ def writestackgen(Xpreds, fil='NN.512.256.64.csv') :
 if __name__ == '__main__':
 	print("Importing Data")
 	# these will be sparse
-	X, y, unique_cuisines,classes,test_indices,Xtest = getdata(dataset='Train') # import the data
+	X, y, unique_cuisines,classes,test_indices,Xtest = getdata() # import the data
 
 	# # Split into training and validation sets
 	# rs = 19683
