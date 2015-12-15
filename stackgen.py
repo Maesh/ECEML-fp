@@ -88,7 +88,7 @@ def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
 	rows = np.arange(0,len(Xpreds))
 	for row in rows :
 		outwriter.writerow([int(idx[row]),Xpreds[row]])
-		
+
 if __name__ == '__main__':
 	# Do the training
 	res1 = np.genfromtxt('StackGen.DNN.1-2grams.train.csv',delimiter=',')
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 	# now get test values
 	tst1 = np.genfromtxt('StackGen.DNN.1-2grams.test.csv',delimiter=',')
 	tst2 = np.genfromtxt('StackGen.DNN.1grams.test.csv',delimiter=',')
-	tst3 = np.genfromtxt('StackGen.NN.1-2grams.test.csv',delimiter=',')
+	tst3 = np.genfromtxt('StackGen.NN.1grams.test.csv',delimiter=',')
 	tst4 = np.genfromtxt('StackGen.SVM.1-2grams.test.csv',delimiter=',')
 
 	# SVM values need to be vectorized, so define, fit, and transform
