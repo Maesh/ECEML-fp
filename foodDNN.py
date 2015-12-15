@@ -128,10 +128,10 @@ if __name__ == '__main__':
 	X, y, unique_cuisines,classes,test_indices,_ = getdata(ngram_range=(1,2)) # import the data
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
-	f = clf2.fit(X.toarray(), y.toarray(), nb_epoch=25, batch_size=100, 
+	f = clf2.fit(X.tocsc(), y.tocsc(), nb_epoch=25, batch_size=100, 
 		validation_split=0.15, show_accuracy=True)
 
-	predictions = clf2.predict(X.toarray(), batch_size=100, verbose=1)
+	predictions = clf2.predict(X.tocsc(), batch_size=100, verbose=1)
 	writestackgen(predictions,'StackGen.NN.1-2grams.train.csv')
 
 	_, _, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,2))
