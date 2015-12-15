@@ -30,7 +30,7 @@ def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
 	for row in rows :
 		outwriter.writerow([idx[row],Xpreds[row]])
 
-def writedata() :
+def getdata(ngram_range=(1,1)) :
 	"""
 	Changing this to a function for actually tokenizing and 
 	writing data to csv
@@ -96,7 +96,7 @@ def writedata() :
 	ings_list = [' '.join(x) for x in ingredients]
 	test_list = [' '.join(x) for x in test_ingredients]
 
-	vect = CountVectorizer(tokenizer=LemmaTokenizer())
+	vect = CountVectorizer(tokenizer=LemmaTokenizer(),ngram_range=ngram_range)
 	# vect = Pipeline([
 	# 	('vect', CountVectorizer()),
 	# ])  
@@ -112,89 +112,5 @@ def writedata() :
 	unique_ingredients = set(item for sublist in ingredients for item in sublist)
 	unique_cuisines = set(classes)
 
-	print("Writing files")
-	# Now to actually write the data
-	fil = 'one.hot.training.ingredients.sparse.csv'
-	fil2 = 'one.hot.training.classes.sparse.csv'
-	fil3 = 'one.hot.testing.ingredients.sparse.csv'
-	fil4 = 'testing.indices.sparse.csv'
-
-	np.savez(fil, bag_of_ingredients)
-	np.savez(fil2, bag_of_classes)
-	np.savez(fil3, bag_of_test)
-	# csv.field_size_limit(1000000000)
-	# outwriter = csv.writer(open(fil,'w'),delimiter=",")
-	# # rows = np.arange(0,len(bag_of_ingredients))
-	# rows = np.arange(0,bag_of_ingredients.shape[0])
-	# for row in rows :
-	# 	outwriter.writerow(bag_of_ingredients[row])
-
-	# csv.field_size_limit(1000000000)
-	# outwriter = csv.writer(open(fil2,'w'),delimiter=",")
-	# # rows = np.arange(0,len(bag_of_classes))
-	# rows = np.arange(0,bag_of_classes.shape[0])
-	# for row in rows :
-	# 	outwriter.writerow(bag_of_classes[row])
-
-	# csv.field_size_limit(1000000000)
-	# outwriter = csv.writer(open(fil3,'w'),delimiter=",")
-	# # rows = np.arange(0,len(bag_of_test))
-	# rows = np.arange(0,bag_of_test.shape[0])
-	# for row in rows :
-	# 	outwriter.writerow(bag_of_test[row])
-
-	# csv.field_size_limit(1000000000)
-	# outwriter = csv.writer(open(fil4,'w'),delimiter=",")
-	# rows = np.arange(0,len(test_indices))
-	# for row in rows :
-	# 	outwriter.writerow([test_indices[row]])
-
-
-def getdata(write=False,dataset='Train') :
-	"""
-	Gets all the data in. 
-	"""
-	if dataset == 'Train' :
-		print("Get training ingredients")
-		ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
-						delimiter = ',')
-
-		print("Get training classes")
-		classes = np.genfromtxt('one.hot.training.classes.csv',
-						delimiter = ',')
-		unique_cuisines = {'brazilian',
-							'british',
-							'cajun_creole',
-							'chinese',
-							'filipino',
-							'french',
-							'greek',
-							'indian',
-							'irish',
-							'italian',
-							'jamaican',
-							'japanese',
-							'korean',
-							'mexican',
-							'moroccan',
-							'russian',
-							'southern_us',
-							'spanish',
-							'thai',
-							'vietnamese'}
-		print "Number of recipes = %d"%(len(ingredients))
-		print "Number of unique ingredients = %d"%(len(ingredients[0]))
-		print "Number of unique cuisines = %d"%(len(unique_cuisines))
-		return ingredients,classes,unique_cuisines
-
-	if dataset == 'Test' :
-		print("Get testing ingredients")
-		test_ingredients = np.genfromtxt('one.hot.testing.ingredients.csv',
-						delimiter = ',')
-
-		print("Get testing indices")
-		indices = np.genfromtxt('testing.indices.csv',
-						delimiter = ',')
-		return test_ingredients, indices
-	#unique_ingredients = set(item for sublist in ingredients for item in sublist)
-	# Hack but it makes it easier
+	return bag_of_ingredients, bag_of_classes, unique_cuisines,
+		classes, test_indices, bag_of_test

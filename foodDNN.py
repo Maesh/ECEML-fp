@@ -89,7 +89,8 @@ def writestackgen(Xpreds, fil='NN.512.256.64.csv') :
 
 if __name__ == '__main__':
 	print("Importing Data")
-	# X, y, unique_cuisines = getdata(dataset='Train') # import the data
+	# these will be sparse
+	X, y, unique_cuisines,classes,test_indices,Xtest = getdata(dataset='Train') # import the data
 
 	# # Split into training and validation sets
 	# rs = 19683
@@ -124,18 +125,15 @@ if __name__ == '__main__':
 	#####
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
-	X, y, unique_cuisines = getdata(dataset='Train') # import the data
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
-	f = clf2.fit(X, y, nb_epoch=25, batch_size=1000, 
+	f = clf2.fit(X.toarray(), y.toarray(), nb_epoch=25, batch_size=1000, 
 		validation_split=0.15, show_accuracy=True)
 
-	# print("Make predictions on test set")
-	# predictions = clf2.predict(Xtest, batch_size=25, verbose=1)
-	Xtest = np.genfromtxt('one.hot.testing.ingredients.csv',
-							delimiter = ',')
+	predictions = clf2.predict(X.toarray(), batch_size=1000, verbose=1)
+	writestackgen(predictions,'StackGen.NN.1grams.train.csv')
 
-	predictions = clf2.predict(Xtest, batch_size=1000, verbose=1)
+	predictions = clf2.predict(Xtest.toarray(), batch_size=1000, verbose=1)
 	writestackgen(predictions,'StackGen.NN.1grams.test.csv')
 	# # Take max value in preds rows as classification
 	# pred = np.zeros((len(Xtest)))
