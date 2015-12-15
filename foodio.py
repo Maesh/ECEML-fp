@@ -156,11 +156,11 @@ def getdata(write=False,dataset='Train') :
 	"""
 	if dataset == 'Train' :
 		print("Get training ingredients")
-		ingredients = np.genfromtxt('one.hot.training.ingredients.ng1-2.csv',
+		ingredients = np.genfromtxt('one.hot.training.ingredients.csv',
 						delimiter = ',')
 
 		print("Get training classes")
-		classes = np.genfromtxt('one.hot.training.classes.ng1-2.csv',
+		classes = np.genfromtxt('one.hot.training.classes.csv',
 						delimiter = ',')
 		unique_cuisines = {'brazilian',
 							'british',
@@ -198,73 +198,3 @@ def getdata(write=False,dataset='Train') :
 		return test_ingredients, indices
 	#unique_ingredients = set(item for sublist in ingredients for item in sublist)
 	# Hack but it makes it easier
-
-def getsparsedata() :
-	"""
-	Produces sparse data version for SVM
-	"""
-	import numpy as np
-	import json as js
-	from scipy.sparse import csr_matrix
-
-	#Training
-	with open('foodtrain/train.json') as json_data:
-		data = js.load(json_data)
-		json_data.close()
-
-	classes = [item['cuisine'] for item in data]
-	ingredients = [item['ingredients'] for item in data]
-	unique_ingredients = set(item for sublist in ingredients for item in sublist)
-	unique_cuisines = set(classes)
-
-	# print len(data)
-	# print (classes)
-	print "Number of recipes = %d"%(len(ingredients))
-	print "Number of unique ingredients = %d"%(len(unique_ingredients))
-	print "Number of unique cuisines = %d"%(len(unique_cuisines))
-
-	X_train = np.zeros((len(ingredients), len(unique_ingredients)))
-
-	# Compile feature matrix. Could be sparse but dense is fine for us.
-	# Each feature is an ingredient. Each row is a recipe. For each 
-	# column (feature), a 1 indicates the recipe has that ingredient,
-	# while a 0 indicates it does not.
-	for d,dish in enumerate(ingredients):
-		for i,ingredient in enumerate(unique_ingredients):
-			if ingredient in dish:
-				X_train[d,i] = 1
-
-	# Also need to ensure
-	y_train=np.zeros((len(classes),len(unique_cuisines)))
-	for c,clas in enumerate(classes):
-		for q,cuisine in enumerate(unique_cuisines):
-			if cuisine in clas:
-				y_train[c,q] = 1
-
-	# Testing
-	# to test:
-	with open('foodtest/test.json') as json_data:
-		data = js.load(json_data)
-		json_data.close()
-
-	ingredients = [item['ingredients'] for item in data]
-	indices = [item['id'] for item in data]
-
-	# print len(data)
-	# print (classes)
-	print "Number of recipes = %d"%(len(ingredients))
-	print "Number of unique ingredients = %d"%(len(unique_ingredients))
-
-	Xtest = np.zeros((len(ingredients), len(unique_ingredients)))
-
-	# Compile feature matrix. Could be sparse but dense is fine for us.
-	# Each feature is an ingredient. Each row is a recipe. For each 
-	# column (feature), a 1 indicates the recipe has that ingredient,
-	# while a 0 indicates it does not.
-	for d,dish in enumerate(ingredients):
-		for i,ingredient in enumerate(unique_ingredients):
-			if ingredient in dish:
-				Xtest[d,i] = 1
-
-	print Xtest.shape
-	return X_train,y_train,Xtest,unique_cuisines,indices

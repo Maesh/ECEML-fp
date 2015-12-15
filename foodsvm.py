@@ -24,6 +24,14 @@ def writetest(idx,Xpreds, fil='svm1.csv') :
 	for row in rows :
 		outwriter.writerow([int(idx[row]),Xpreds[row]])
 
+def writestackgen(Xpreds, fil='NN.512.256.64.csv') :
+	import csv
+	csv.field_size_limit(1000000000)
+	outwriter = csv.writer(open(fil,'w'),delimiter=",")
+	rows = np.arange(0,len(Xpreds))
+	for row in rows :
+		outwriter.writerow(Xpreds[row])
+
 if __name__ == '__main__':
 	unique_cuisines_vocab= {'brazilian':0,
 							'british':1,
@@ -121,33 +129,42 @@ if __name__ == '__main__':
 	# # Split into training and validation sets
 	rs = 19683
 	X_train, X_test, y_train, y_test = \
-		cross_validation.train_test_split(Xsc, classes, \
-			test_size=0.2, random_state=rs)
+		cross_validation.train_test_split(X, classes, \
+			test_size=0.4, random_state=rs)
 
-	print("Training classifier")
-	# Train the classifier and fit to training data
-	# Grid search for RBF
-	Cs = np.logspace(1, 5, 10)
-	gammas = np.logspace(-4,-2,10)
-	classifier = GridSearchCV(estimator=svm.SVC(), \
-		param_grid=dict(C=Cs,gamma=gammas,kernel=['rbf']),
-		verbose=3,
-		n_jobs=-1,scoring='accuracy' )
+	cfr = svm.SVC(C=10,gamma=0.01,kernel='rbf')
+	cfr.fit(X_train,y_train)
+	predictions = cfr.predict(X_test)
 
-	classifier.fit(X_train, y_train)
-	print classifier.best_score_
-	print classifier.best_estimator_
+	vectclasses = CountVectorizer(vocabulary=unique_cuisines_vocab)
+	bag_of_classes = vectclasses.fit(predictions)
+	bag_of_classes = vectclasses.transform(predictions).toarray()
 
-	Cs = np.logspace(0, 2, 6)
-	gammas = np.logspace(-2,2,5)
-	classifier = GridSearchCV(estimator=svm.SVC(), \
-		param_grid=dict(C=Cs,gamma=gammas,kernel=['rbf']),
-		verbose=3,
-		n_jobs=-1,scoring='accuracy' )
+	writestackgen(bag_of_classes,'StackGen.SVM.1-2grams.test.csv')
+	# print("Training classifier")
+	# # Train the classifier and fit to training data
+	# # Grid search for RBF
+	# Cs = np.logspace(1, 5, 10)
+	# gammas = np.logspace(-4,-2,10)
+	# classifier = GridSearchCV(estimator=svm.SVC(), \
+	# 	param_grid=dict(C=Cs,gamma=gammas,kernel=['rbf']),
+	# 	verbose=3,
+	# 	n_jobs=-1,scoring='accuracy' )
 
-	classifier.fit(X_train, y_train)
-	print classifier.best_score_
-	print classifier.best_estimator_
+	# classifier.fit(X_train, y_train)
+	# print classifier.best_score_
+	# print classifier.best_estimator_
+
+	# Cs = np.logspace(0, 2, 6)
+	# gammas = np.logspace(-2,2,5)
+	# classifier = GridSearchCV(estimator=svm.SVC(), \
+	# 	param_grid=dict(C=Cs,gamma=gammas,kernel=['rbf']),
+	# 	verbose=3,
+	# 	n_jobs=-1,scoring='accuracy' )
+
+	# classifier.fit(X_train, y_train)
+	# print classifier.best_score_
+	# print classifier.best_estimator_
 
 	# print("Making predictions on validation set")
 	# # Make predictions on validation data
