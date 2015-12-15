@@ -92,17 +92,18 @@ def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
 if __name__ == '__main__':
 	# Do the training
 	res1 = np.genfromtxt('StackGen.DNN.1-2grams.train.csv',delimiter=',')
-	res2 = np.genfromtxt('StackGen.DNN.1grams.train.csv',delimiter=',')
-	res3 = np.genfromtxt('StackGen.NN.1-2grams.train.csv',delimiter=',')
-	# res4 = np.genfromtxt('StackGen.SVM.1-2grams.train.csv',delimiter=',')
+	res2 = np.genfromtxt('StackGen.DNN.1-2grams.adadelta.train.csv',delimiter=',')
+	res3 = np.genfromtxt('StackGen.DNN.1grams.train.csv',delimiter=',')
+	res4 = np.genfromtxt('StackGen.NN.1-2grams.train.csv',delimiter=',')
+	res5 = np.genfromtxt('StackGen.NN.1grams.train.csv',delimiter=',')
 
-	trainmat = np.mean(np.array([res1,res2,res3]),axis=0)
+	trainmat = np.mean(np.array([res1,res2,res3,res4,res5]),axis=0)
 
 	# now normalize by row
 	trainmatnorm = preprocessing.normalize(trainmat)
 
-	# pull in true values
-	y_test = np.genfromtxt('StackGen.train.actualvalues.csv',delimiter=',')
+	# pull in true values 
+	_, y, _,_,Xtest = getdata(ngram_range=(1,2))
 
 	# Instantiate neural network
 	cfr = nnk(trainmatnorm,y_test,lr=0.1)
@@ -114,9 +115,10 @@ if __name__ == '__main__':
 
 	# now get test values
 	tst1 = np.genfromtxt('StackGen.DNN.1-2grams.test.csv',delimiter=',')
-	tst2 = np.genfromtxt('StackGen.DNN.1grams.test.csv',delimiter=',')
-	tst3 = np.genfromtxt('StackGen.NN.1grams.test.csv',delimiter=',')
-	# tst4 = np.genfromtxt('StackGen.SVM.1-2grams.test.csv',delimiter=',')
+	tst2 = np.genfromtxt('StackGen.DNN.1-2grams.adadelta.test.csv',delimiter=',')
+	tst3 = np.genfromtxt('StackGen.DNN.1grams.test.csv',delimiter=',')
+	tst4 = np.genfromtxt('StackGen.NN.1-2grams.test.csv',delimiter=',')
+	tst5 = np.genfromtxt('StackGen.NN.1grams.test.csv',delimiter=',')
 
 	# SVM values need to be vectorized, so define, fit, and transform
 	# via CountVectorizer
@@ -145,11 +147,11 @@ if __name__ == '__main__':
 	# svmtst = vect.transform(tst4).toarray()
 
 	# now add all values and normalize
-	testmat = np.sum(np.array([tst1,tst2,tst3]),axis=0)
-	Xtest = preprocessing.normalize(testmat)
+	testmat = np.mean(np.array([tst1,tst2,tst3,tst4,tst5]),axis=0)
+	# Xtest = preprocessing.normalize(testmat)
 
 	# finally, we can make predictions on true test set 
-	predictions = cfr.predict(Xtest)
+	predictions = cfr.predict(testmat)
 
 	pred = np.zeros((len(Xtest)))
 	for row in np.arange(0,len(predictions)) :

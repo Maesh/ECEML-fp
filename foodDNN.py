@@ -50,7 +50,7 @@ def nnk(X,y_uniques,lr=0.1):
 	
 	# Use mean absolute error as loss function since that is 
 	# what kaggle uses
-	model.compile(loss='categorical_crossentropy', optimizer=sgd)
+	model.compile(loss='categorical_crossentropy', optimizer='adadelta')
 	return model
 
 def rnnkeras(X,y_uniques,lr=0.1) :
@@ -132,10 +132,10 @@ if __name__ == '__main__':
 		validation_split=0.15, show_accuracy=True)
 
 	predictions = clf2.predict(X.toarray(), batch_size=1000, verbose=1)
-	writestackgen(predictions,'StackGen.DNN.1-2grams.train.csv')
+	writestackgen(predictions,'StackGen.DNN.1-2grams.adadelta.train.csv')
 
 	predictions = clf2.predict(Xtest.toarray(), batch_size=1000, verbose=1)
-	writestackgen(predictions,'StackGen.DNN.1-2grams.test.csv')
+	writestackgen(predictions,'StackGen.DNN.1-2grams.adadelta.test.csv')
 	# # Take max value in preds rows as classification
 	# pred = np.zeros((len(Xtest)))
 	# for row in np.arange(0,len(predictions)) :
