@@ -32,16 +32,16 @@ def nnk(X,y_uniques,lr=0.1):
 	# Dense(64) is a fully-connected layer with 64 hidden units.
 	# in the first layer, you must specify the expected input data shape
 	model.add(Dense(512, input_dim=X.shape[1], init='he_normal'))#, W_regularizer=l2(0.1)))
-	model.add(Activation('tanh'))
-	# model.add(PReLU())
+	# model.add(Activation('tanh'))
+	model.add(PReLU())
 	model.add(Dropout(0.5))
 	model.add(Dense(256, init='he_normal',input_dim=512))#, W_regularizer=l2(0.1)))
-	model.add(Activation('tanh'))
-	# model.add(PReLU())
+	# model.add(Activation('tanh'))
+	model.add(PReLU())
 	model.add(Dropout(0.5))
 	model.add(Dense(64, init='he_normal',input_dim=256))#, W_regularizer=l2(0.1)))
-	model.add(Activation('tanh'))
-	# model.add(PReLU())
+	# model.add(Activation('tanh'))
+	model.add(PReLU())
 	model.add(Dropout(0.5))
 	model.add(Dense(len(y_uniques), init='he_normal',input_dim=64))#, W_regularizer=l2(0.1)))
 	model.add(Activation('softmax'))
@@ -125,18 +125,17 @@ if __name__ == '__main__':
 	#####
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
-	X, y, unique_cuisines,classes,test_indices,_ = getdata(ngram_range=(1,2)) # import the data
+	X, y, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,1)) # import the data
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
 	f = clf2.fit(X.toarray(), y.toarray(), nb_epoch=25, batch_size=1000, 
 		validation_split=0.15, show_accuracy=True)
 
 	predictions = clf2.predict(X.toarray(), batch_size=1000, verbose=1)
-	writestackgen(predictions,'StackGen.NN.1-2grams.train.csv')
+	writestackgen(predictions,'StackGen.DNN.1grams.train.csv')
 
-	_, _, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,2))
 	predictions = clf2.predict(Xtest.toarray(), batch_size=1000, verbose=1)
-	writestackgen(predictions,'StackGen.NN.1-2grams.test.csv')
+	writestackgen(predictions,'StackGen.DNN.1grams.test.csv')
 	# # Take max value in preds rows as classification
 	# pred = np.zeros((len(Xtest)))
 	# for row in np.arange(0,len(predictions)) :
