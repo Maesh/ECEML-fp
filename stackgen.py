@@ -94,9 +94,9 @@ if __name__ == '__main__':
 	res1 = np.genfromtxt('StackGen.DNN.1-2grams.train.csv',delimiter=',')
 	res2 = np.genfromtxt('StackGen.DNN.1grams.train.csv',delimiter=',')
 	res3 = np.genfromtxt('StackGen.NN.1-2grams.train.csv',delimiter=',')
-	res4 = np.genfromtxt('StackGen.SVM.1-2grams.train.csv',delimiter=',')
+	# res4 = np.genfromtxt('StackGen.SVM.1-2grams.train.csv',delimiter=',')
 
-	trainmat = np.sum(np.array([res1,res2,res3,res4]),axis=0)
+	trainmat = np.sum(np.array([res1,res2,res3]),axis=0)
 
 	# now normalize by row
 	trainmatnorm = preprocessing.normalize(trainmat)
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 	tst1 = np.genfromtxt('StackGen.DNN.1-2grams.test.csv',delimiter=',')
 	tst2 = np.genfromtxt('StackGen.DNN.1grams.test.csv',delimiter=',')
 	tst3 = np.genfromtxt('StackGen.NN.1grams.test.csv',delimiter=',')
-	tst4 = np.genfromtxt('StackGen.SVM.1-2grams.test.csv',delimiter=',')
+	# tst4 = np.genfromtxt('StackGen.SVM.1-2grams.test.csv',delimiter=',')
 
 	# SVM values need to be vectorized, so define, fit, and transform
 	# via CountVectorizer
@@ -140,9 +140,9 @@ if __name__ == '__main__':
 							'spanish',
 							'thai',
 							'vietnamese'}
-	vect = CountVectorizer(vocabulary=unique_cuisines)
-	svmtst = vect.fit(tst4)
-	svmtst = vect.transform(tst4).toarray()
+	# vect = CountVectorizer(vocabulary=unique_cuisines)
+	# svmtst = vect.fit(tst4)
+	# svmtst = vect.transform(tst4).toarray()
 
 	# now add all values and normalize
 	testmat = np.sum(np.array[tst1,tst2,tst3,svmtst])
