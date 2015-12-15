@@ -96,7 +96,7 @@ if __name__ == '__main__':
 	res3 = np.genfromtxt('StackGen.NN.1-2grams.train.csv',delimiter=',')
 	# res4 = np.genfromtxt('StackGen.SVM.1-2grams.train.csv',delimiter=',')
 
-	trainmat = np.sum(np.array([res1,res2,res3]),axis=0)
+	trainmat = np.mean(np.array([res1,res2,res3]),axis=0)
 
 	# now normalize by row
 	trainmatnorm = preprocessing.normalize(trainmat)
@@ -145,11 +145,15 @@ if __name__ == '__main__':
 	# svmtst = vect.transform(tst4).toarray()
 
 	# now add all values and normalize
-	testmat = np.sum(np.array[tst1,tst2,tst3,svmtst])
+	testmat = np.sum(np.array([tst1,tst2,tst3]),axis=0)
 	Xtest = preprocessing.normalize(testmat)
 
 	# finally, we can make predictions on true test set 
 	predictions = cfr.predict(Xtest)
+
+	pred = np.zeros((len(Xtest)))
+	for row in np.arange(0,len(predictions)) :
+		pred[row] = np.argmax(predictions[row])
 
 	unique_cuisines = sorted(list(unique_cuisines))
 	newcuisines = []
@@ -163,4 +167,4 @@ if __name__ == '__main__':
 	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
 	print("Storing predictions")
-	writetest(test_indices,predstr,'StackGen.test.results.csv')
+	writetest(test_indices,predstr,'StackGen.test.results.meanagg.csv')
