@@ -135,7 +135,7 @@ if __name__ == '__main__':
 	writestackgen(predictions,'StackGen.NN.1-2grams.train.csv')
 
 	_, _, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,2))
-	predictions = clf2.predict(Xtest.toarray(), batch_size=100, verbose=1)
+	predictions = clf2.predict(Xtest.tocsc(), batch_size=100, verbose=1)
 	writestackgen(predictions,'StackGen.NN.1-2grams.test.csv')
 	# # Take max value in preds rows as classification
 	# pred = np.zeros((len(Xtest)))
