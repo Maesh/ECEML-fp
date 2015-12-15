@@ -125,7 +125,7 @@ if __name__ == '__main__':
 	#####
 	print("Testing classifier on Test data")
 	print("Re-train with full training set")
-	X, y, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,2)) # import the data
+	X, y, unique_cuisines,classes,test_indices,_ = getdata(ngram_range=(1,2)) # import the data
 
 	clf2 = nnk(X,unique_cuisines,lr=0.1)
 	f = clf2.fit(X.toarray(), y.toarray(), nb_epoch=25, batch_size=1000, 
@@ -133,7 +133,8 @@ if __name__ == '__main__':
 
 	predictions = clf2.predict(X.toarray(), batch_size=1000, verbose=1)
 	writestackgen(predictions,'StackGen.NN.1-2grams.train.csv')
-
+	
+	_, _, unique_cuisines,classes,test_indices,Xtest = getdata(ngram_range=(1,2))
 	predictions = clf2.predict(Xtest.toarray(), batch_size=1000, verbose=1)
 	writestackgen(predictions,'StackGen.NN.1-2grams.test.csv')
 	# # Take max value in preds rows as classification
