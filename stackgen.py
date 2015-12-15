@@ -81,7 +81,14 @@ def nnk(X,y_uniques,lr=0.1):
 	model.compile(loss='categorical_crossentropy', optimizer=sgd)
 	return model
 
-
+def writetest(idx,Xpreds, fil='NN.512.256.64.csv') :
+	import csv
+	csv.field_size_limit(1000000000)
+	outwriter = csv.writer(open(fil,'w'),delimiter=",")
+	rows = np.arange(0,len(Xpreds))
+	for row in rows :
+		outwriter.writerow([int(idx[row]),Xpreds[row]])
+		
 if __name__ == '__main__':
 	# Do the training
 	res1 = np.genfromtxt('StackGen.DNN.1-2grams.train.csv',delimiter=',')
@@ -89,7 +96,7 @@ if __name__ == '__main__':
 	res3 = np.genfromtxt('StackGen.NN.1-2grams.train.csv',delimiter=',')
 	res4 = np.genfromtxt('StackGen.SVM.1-2grams.train.csv',delimiter=',')
 
-	trainmat = np.sum(np.array([res1,res2,res3]),axis=0)
+	trainmat = np.sum(np.array([res1,res2,res3,res4]),axis=0)
 
 	# now normalize by row
 	trainmatnorm = preprocessing.normalize(trainmat)
@@ -104,3 +111,56 @@ if __name__ == '__main__':
 	cfr.fit(trainmatnorm, y_test, nb_epoch=25, shuffle=True,
 		batch_size=1000, validation_split=0.15,
 		show_accuracy=True, verbose=1)
+
+	# now get test values
+	tst1 = np.genfromtxt('StackGen.DNN.1-2grams.test.csv',delimiter=',')
+	tst2 = np.genfromtxt('StackGen.DNN.1grams.test.csv',delimiter=',')
+	tst3 = np.genfromtxt('StackGen.NN.1-2grams.test.csv',delimiter=',')
+	tst4 = np.genfromtxt('StackGen.SVM.1-2grams.test.csv',delimiter=',')
+
+	# SVM values need to be vectorized, so define, fit, and transform
+	# via CountVectorizer
+	unique_cuisines = {'brazilian',
+							'british',
+							'cajun_creole',
+							'chinese',
+							'filipino',
+							'french',
+							'greek',
+							'indian',
+							'irish',
+							'italian',
+							'jamaican',
+							'japanese',
+							'korean',
+							'mexican',
+							'moroccan',
+							'russian',
+							'southern_us',
+							'spanish',
+							'thai',
+							'vietnamese'}
+	vect = CountVectorizer(vocabulary=unique_cuisines)
+	svmtst = vect.fit(tst4)
+	svmtst = vect.transform(tst4).toarray()
+
+	# now add all values and normalize
+	testmat = np.sum(np.array[tst1,tst2,tst3,svmtst])
+	Xtest = preprocessing.normalize(testmat)
+
+	# finally, we can make predictions on true test set 
+	predictions = cfr.predict(Xtest)
+
+	unique_cuisines = sorted(list(unique_cuisines))
+	newcuisines = []
+	for row in np.arange(0,20) :
+		newcuisines.append(unique_cuisines[row])
+
+	predstr = []
+	for row in np.arange(0,len(predictions)) :
+		predstr.append(newcuisines[int(pred[row])])
+
+	test_indices = np.genfromtxt('testing.indices.csv',
+						delimiter = ',')
+	print("Storing predictions")
+	writetest(test_indices,predstr,'StackGen.test.results.csv')
