@@ -112,5 +112,4 @@ def getdata(ngram_range=(1,1)) :
 	unique_ingredients = set(item for sublist in ingredients for item in sublist)
 	unique_cuisines = set(classes)
 
-	return bag_of_ingredients, bag_of_classes, unique_cuisines,
-		classes, test_indices, bag_of_test
+	return bag_of_ingredients, bag_of_classes, unique_cuisines,classes, test_indices, bag_of_test
