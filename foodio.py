@@ -96,7 +96,8 @@ def getdata(ngram_range=(1,1)) :
 	ings_list = [' '.join(x) for x in ingredients]
 	test_list = [' '.join(x) for x in test_ingredients]
 
-	vect = CountVectorizer(tokenizer=LemmaTokenizer(),ngram_range=ngram_range)
+	vect = CountVectorizer(tokenizer=LemmaTokenizer(),ngram_range=ngram_range,
+		max_features=5000)
 	# vect = Pipeline([
 	# 	('vect', CountVectorizer()),
 	# ])  
