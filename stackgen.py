@@ -35,7 +35,7 @@ from keras.utils import np_utils, generic_utils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
-from foodio import getdata, writedata, LemmaTokenizer
+from foodio import getdata, LemmaTokenizer
 
 def onehots(mat) :
 	unique_cuisines_vocab= {'brazilian':0,
@@ -100,16 +100,16 @@ if __name__ == '__main__':
 	trainmat = np.mean(np.array([res1,res2,res3,res4,res5]),axis=0)
 
 	# now normalize by row
-	trainmatnorm = preprocessing.normalize(trainmat)
+	# trainmatnorm = preprocessing.normalize(trainmat)
 
 	# pull in true values 
-	_, y, _,_,Xtest = getdata(ngram_range=(1,2))
+	_, y, _,_,_,_ = getdata(ngram_range=(1,2))
 
 	# Instantiate neural network
-	cfr = nnk(trainmatnorm,y_test,lr=0.1)
+	cfr = nnk(trainmat,y,lr=0.1)
 
 	# train it 
-	cfr.fit(trainmatnorm, y_test, nb_epoch=25, shuffle=True,
+	cfr.fit(trainmat, y.toarray(), nb_epoch=25, shuffle=True,
 		batch_size=1000, validation_split=0.15,
 		show_accuracy=True, verbose=1)
 
@@ -153,7 +153,9 @@ if __name__ == '__main__':
 	# finally, we can make predictions on true test set 
 	predictions = cfr.predict(testmat)
 
-	pred = np.zeros((len(Xtest)))
+	# uncomment below if we want to ignore neural net and do simple ensemble
+	predictions = tst5
+	pred = np.zeros((len(testmat)))
 	for row in np.arange(0,len(predictions)) :
 		pred[row] = np.argmax(predictions[row])
 

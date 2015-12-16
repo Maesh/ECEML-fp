@@ -56,11 +56,18 @@ if __name__ == '__main__':
 	res2ints = []
 	res3ints = []
 	res4ints = []
-	for row in np.arange(0,len(res1)) :
-		res1ints.append(unique_cuisines_vocab[res1[row,1]])
-		res2ints.append(unique_cuisines_vocab[res2[row,1]])
-		res3ints.append(unique_cuisines_vocab[res3[row,1]])
-		res4ints.append(unique_cuisines_vocab[res4[row,1]])
+	res5ints = []
+	for row in np.arange(0,len(t1preds)) :
+		res1ints.append(unique_cuisines_vocab[t1preds[row]])
+		res2ints.append(unique_cuisines_vocab[t2preds[row]])
+		res3ints.append(unique_cuisines_vocab[t3preds[row]])
+		res4ints.append(unique_cuisines_vocab[t4preds[row]])
+		res5ints.append(unique_cuisines_vocab[t5preds[row]])
+		# res1ints.append(unique_cuisines_vocab[t1preds[row,1]])
+		# res2ints.append(unique_cuisines_vocab[t2preds[row,1]])
+		# res3ints.append(unique_cuisines_vocab[t3preds[row,1]])
+		# res4ints.append(unique_cuisines_vocab[t4preds[row,1]])
+		# res5ints.append(unique_cuisines_vocab[t5preds[row,1]])
 
 	# Compute correlation coefficient
 	mats = [res1ints,res2ints,res3ints,res4ints]
@@ -90,4 +97,4 @@ if __name__ == '__main__':
 
 	test_indices = np.genfromtxt('testing.indices.csv',
 						delimiter = ',')
-	writetest(test_indices,ensembStrings,fil='ensem.NN.DNN.SVM.DNN5000.csv')
+	writetest(test_indices,ensemb,fil='5NNs.csv')
